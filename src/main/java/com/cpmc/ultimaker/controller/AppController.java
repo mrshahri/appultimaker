@@ -77,8 +77,8 @@ public class AppController {
     }
 
     @RequestMapping(value = "/operate-component", method = RequestMethod.GET)
-    public String getUltimakerComponentOperationsPage(ModelMap model) {
-        String operationsUrl = "http://uaf132854.ddns.uark.edu:9002/virtualization-uark/probe?deviceId=Ultimaker01";
+    public String getUltimakerComponentOperationsPage(@RequestParam("deviceId") String deviceId, ModelMap model) {
+        String operationsUrl = "http://uaf132854.ddns.uark.edu:9002/virtualization-uark/probe?deviceId=" + deviceId;
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet httpGet = new HttpGet(operationsUrl);
         HttpResponse httpResponse = null;
@@ -110,8 +110,10 @@ public class AppController {
     }
 
     @RequestMapping(value = "/device-parameters", method = RequestMethod.GET)
-    public String getDeviceParametersPage(@RequestParam("operationId") String operationId, ModelMap model) {
-        String probeUrl = "http://uaf132854.ddns.uark.edu:9002/virtualization-uark/probe?deviceId=Ultimaker01";
+    public String getDeviceParametersPage(@RequestParam("operationId") String operationId,
+                                          @RequestParam("deviceId") String deviceId,
+                                          ModelMap model) {
+        String probeUrl = "http://uaf132854.ddns.uark.edu:9002/virtualization-uark/probe?deviceId=" + deviceId;
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet httpGet = new HttpGet(probeUrl);
         HttpResponse httpResponse = null;
@@ -120,7 +122,7 @@ public class AppController {
             Gson gson = new Gson();
             String jsonString = IOUtils.toString(httpResponse.getEntity().getContent(), "UTF-8");
             Operations operations = gson.fromJson(jsonString, Operations.class);
-            model.addAttribute("deviceId", "Ultimaker01");
+            model.addAttribute("deviceId", deviceId);
             model.addAttribute("operationId", operationId);
             for (DeviceOperation operation : operations.getDeviceOperations()) {
                 if (operationId.equals(operation.getOperationId())) {
@@ -136,8 +138,10 @@ public class AppController {
     }
 
     @RequestMapping(value = "/component-parameters", method = RequestMethod.GET)
-    public String getComponentParametersPage(@RequestParam("operationId") String operationId, ModelMap model) {
-        String operationsUrl = "http://uaf132854.ddns.uark.edu:9002/virtualization-uark/probe?deviceId=Ultimaker01";
+    public String getComponentParametersPage(@RequestParam("operationId") String operationId,
+                                             @RequestParam("deviceId") String deviceId,
+                                             ModelMap model) {
+        String operationsUrl = "http://uaf132854.ddns.uark.edu:9002/virtualization-uark/probe?deviceId=" + deviceId;
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet httpGet = new HttpGet(operationsUrl);
         HttpResponse httpResponse = null;
